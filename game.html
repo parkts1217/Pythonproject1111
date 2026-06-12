@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시나모롤 파스텔 테트리스</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Gowun Dodum (둥글둥글 귀여운 폰트) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', 'Gowun Dodum', sans-serif;
+            background-color: #E8F4FD;
+            overflow-x: hidden;
+        }
+        /* 파스텔 구름 애니메이션 */
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        .cloud-1 {
+            width: 120px; height: 40px;
+            top: 10%; left: -150px;
+            animation: floatCloud 25s linear infinite;
+        }
+        .cloud-1::before { width: 50px; height: 50px; top: -20px; left: 15px; }
+        .cloud-1::after { width: 70px; height: 70px; top: -35px; right: 15px; }
+
+        .cloud-2 {
+            width: 180px; height: 60px;
+            top: 40%; left: -200px;
+            animation: floatCloud 35s linear infinite;
+            animation-delay: 5s;
+        }
+        .cloud-2::before { width: 80px; height: 80px; top: -30px; left: 25px; }
+        .cloud-2::after { width: 100px; height: 100px; top: -50px; right: 25px; }
+
+        .cloud-3 {
+            width: 100px; height: 35px;
+            top: 75%; left: -120px;
+            animation: floatCloud 20s linear infinite;
+            animation-delay: 12s;
+        }
+        .cloud-3::before { width: 40px; height: 40px; top: -15px; left: 12px; }
+        .cloud-3::after { width: 55px; height: 55px; top: -25px; right: 12px; }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw + 250px)); }
+        }
+
+        /* 네온/파스텔 푸시 버튼 느낌 */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border: 4px solid #BEE3F8;
+            box-shadow: 0 8px 32px 0 rgba(165, 213, 244, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 relative select-none">
+
+    <!-- 구름 배경 요소 -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+
+    <!-- 헤더 영역 -->
+    <header class="w-full max-w-md text-center z-10 my-2">
+        <h1 class="text-3xl md:text-4xl font-bold text-[#4A90E2] drop-shadow-md flex items-center justify-center gap-2">
+            <!-- 시나모롤 느낌 미니 SVG 아이콘 -->
+            <svg class="w-10 h-10" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="25" y="15" width="50" height="35" rx="17" fill="white" stroke="#BEE3F8" stroke-width="3"/>
+                <!-- 왼쪽 귀 -->
+                <path d="M28 20 C10 18, 5 35, 25 38 C28 38, 28 32, 28 20 Z" fill="white" stroke="#BEE3F8" stroke-width="3"/>
+                <!-- 오른쪽 귀 -->
+                <path d="M72 20 C90 18, 95 35, 75 38 C72 38, 72 32, 72 20 Z" fill="white" stroke="#BEE3F8" stroke-width="3"/>
+                <!-- 눈 -->
+                <circle cx="42" cy="30" r="3" fill="#4A90E2"/>
+                <circle cx="58" cy="30" r="3" fill="#4A90E2"/>
+                <!-- 볼터치 -->
+                <circle cx="36" cy="35" r="4" fill="#FFB7B2" opacity="0.8"/>
+                <circle cx="64" cy="35" r="4" fill="#FFB7B2" opacity="0.8"/>
+                <!-- 입 -->
+                <path d="M48 35 Q50 38 52 35" stroke="#4A90E2" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>시나모롤 테트리스</span>
+        </h1>
+        <p class="text-sm text-[#718096] font-medium mt-1">꿈속을 날아다니는 시나모롤과 함께 100레벨에 도전해보세요! ✨</p>
+    </header>
+
+    <!-- 게임 메인 컨테이너 -->
+    <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 z-10 items-stretch my-auto">
+        
+        <!-- 왼쪽 패널: 가이드 및 사운드 조절 -->
+        <section class="lg:col-span-3 flex flex-col justify-between gap-4">
+            <!-- 마스코트 반응형 박스 -->
+            <div class="glass-panel rounded-3xl p-4 flex flex-col items-center justify-center text-center">
+                <!-- 시나모롤 마스코트 SVG -->
+                <div class="relative w-36 h-28 my-2 transition-transform duration-300 hover:scale-105" id="mascot-container">
+                    <svg viewBox="0 0 120 80" class="w-full h-full">
+                        <!-- 귀꼬리 몸체 합체 슬라이드 느낌 -->
+                        <ellipse cx="60" cy="45" rx="30" ry="22" fill="white" stroke="#90CDF4" stroke-width="3"/>
+                        <!-- 왼쪽 큰귀 -->
+                        <path id="ear-l" d="M32 35 C-10 30, -5 65, 30 52" fill="white" stroke="#90CDF4" stroke-width="3" stroke-linejoin="round"/>
+                        <!-- 오른쪽 큰귀 -->
+                        <path id="ear-r" d="M88 35 C130 30, 125 65, 90 52" fill="white" stroke="#90CDF4" stroke-width="3" stroke-linejoin="round"/>
+                        <!-- 눈뭉치 -->
+                        <circle cx="48" cy="45" r="3.5" fill="#3182CE"/>
+                        <circle cx="72" cy="45" r="3.5" fill="#3182CE"/>
+                        <!-- 볼터치 (리얼 핑크) -->
+                        <circle cx="41" cy="51" r="5" fill="#FFB7B2"/>
+                        <circle cx="79" cy="51" r="5" fill="#FFB7B2"/>
+                        <!-- 귀여운 미소 -->
+                        <path id="mascot-mouth" d="M57 51 Q60 54 63 51" stroke="#3182CE" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <!-- 조그만 발 -->
+                        <circle cx="48" cy="68" r="5" fill="white" stroke="#90CDF4" stroke-width="2"/>
+                        <circle cx="72" cy="68" r="5" fill="white" stroke="#90CDF4" stroke-width="2"/>
+                    </svg>
+                    <!-- 말풍선 -->
+                    <div id="mascot-bubble" class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white border-2 border-[#90CDF4] text-xs px-2 py-1 rounded-full text-[#3182CE] font-bold shadow-sm whitespace-nowrap">
+                        안녕! 준비됐어?
+                    </div>
+                </div>
+                <div class="text-xs text-[#718096] font-medium leading-relaxed mt-2 text-center">
+                    <span class="text-[#3182CE] font-bold">시나몬</span>은 플레이 상황에 따라 다양한 표정을 지어요! 
+                </div>
+            </div>
+
+            <!-- 사운드 컨트롤 & 조작 가이드 -->
+            <div class="glass-panel rounded-3xl p-4 flex flex-col gap-3">
+                <h3 class="text-md font-bold text-[#4A90E2] border-b-2 border-[#E2E8F0] pb-1">음향 및 환경 설정</h3>
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-sm text-[#4A5568] font-semibold">배경음악 (BGM)</span>
+                    <button id="btn-bgm" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#E2E8F0] text-[#4A5568] hover:bg-[#BEE3F8] transition-colors focus:outline-none">
+                        끄기 🔇
+                    </button>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-sm text-[#4A5568] font-semibold">효과음 (SFX)</span>
+                    <button id="btn-sfx" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#90CDF4] text-white hover:opacity-90 transition-opacity focus:outline-none">
+                        켜짐 🔊
+                    </button>
+                </div>
+                
+                <h3 class="text-md font-bold text-[#4A90E2] border-b-2 border-[#E2E8F0] pb-1 mt-2">키보드 조작법</h3>
+                <ul class="text-xs text-[#718096] space-y-1.5">
+                    <li class="flex justify-between"><span>이동</span> <span class="font-bold text-[#4A5568]">← / → 방향키</span></li>
+                    <li class="flex justify-between"><span>블록 회전</span> <span class="font-bold text-[#4A5568]">↑ 방향키</span></li>
+                    <li class="flex justify-between"><span>소프트 드롭</span> <span class="font-bold text-[#4A5568]">↓ 방향키</span></li>
+                    <li class="flex justify-between"><span>하드 드롭</span> <span class="font-bold text-[#4A5568]">Space bar</span></li>
+                    <li class="flex justify-between"><span>보관 (Hold)</span> <span class="font-bold text-[#4A5568]">Shift / C 키</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 가운데 패널: 테트리스 메인 보드 -->
+        <section class="lg:col-span-6 flex flex-col items-center justify-center">
+            <div class="glass-panel p-3 rounded-[2.5rem] relative shadow-lg">
+                <!-- 게임 캔버스 -->
+                <canvas id="tetris-canvas" class="bg-white rounded-[2rem] border-4 border-[#E2E8F0] block" width="300" height="600"></canvas>
+                
+                <!-- 일시정지, 게임시작 등의 화면 오버레이 -->
+                <div id="game-overlay" class="absolute inset-4 bg-white/90 backdrop-blur-sm rounded-[2rem] flex flex-col items-center justify-center p-6 text-center z-20">
+                    <div class="w-24 h-24 mb-4">
+                        <!-- 오버레이 화면에 띄울 미니 시나모롤 아이콘 -->
+                        <svg viewBox="0 0 100 80" class="w-full h-full">
+                            <ellipse cx="50" cy="45" rx="25" ry="18" fill="white" stroke="#90CDF4" stroke-width="2.5"/>
+                            <path d="M26 38 C0 33, 5 60, 26 48" fill="white" stroke="#90CDF4" stroke-width="2.5"/>
+                            <path d="M74 38 C100 33, 95 60, 74 48" fill="white" stroke="#90CDF4" stroke-width="2.5"/>
+                            <circle cx="40" cy="45" r="3" fill="#3182CE"/>
+                            <circle cx="60" cy="45" r="3" fill="#3182CE"/>
+                            <circle cx="34" cy="50" r="4" fill="#FFB7B2"/>
+                            <circle cx="66" cy="50" r="4" fill="#FFB7B2"/>
+                            <path d="M47 49 Q50 51 53 49" stroke="#3182CE" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        </svg>
+                    </div>
+                    <h2 id="overlay-title" class="text-2xl font-bold text-[#4A90E2] mb-2">시나모롤 테트리스</h2>
+                    <p id="overlay-desc" class="text-sm text-[#718096] mb-6">하늘 위 구름나라에서 귀여운 블록을 쌓아보세요!</p>
+                    <button id="btn-start" class="px-8 py-3 bg-[#90CDF4] text-white font-bold rounded-full text-lg shadow-md hover:bg-[#63B3ED] active:scale-95 transition-all focus:outline-none">
+                        게임 시작하기 🎮
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 오른쪽 패널: 게임 정보 (점수, 보류, 다음 블록) -->
+        <section class="lg:col-span-3 flex flex-col justify-between gap-4">
+            
+            <!-- 점수 및 레벨 정보 -->
+            <div class="glass-panel rounded-3xl p-4 flex flex-col gap-4 text-center">
+                <div>
+                    <span class="text-xs font-bold text-[#A0AEC0] uppercase tracking-wider block">SCORE</span>
+                    <span id="txt-score" class="text-3xl font-black text-[#4A90E2] tracking-wide">000000</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 border-t-2 border-[#E2E8F0] pt-3">
+                    <div>
+                        <span class="text-xs font-bold text-[#A0AEC0] uppercase tracking-wider block">LEVEL</span>
+                        <div class="flex items-center justify-center gap-1">
+                            <!-- 레벨이 높아질수록 특별한 색상 또는 강조 효과 -->
+                            <span id="txt-level" class="text-2xl font-black text-[#F6AD55]">1</span>
+                            <span class="text-xs text-[#A0AEC0] font-bold">/ 100</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-[#A0AEC0] uppercase tracking-wider block">LINES</span>
+                        <span id="txt-lines" class="text-2xl font-black text-[#4FD1C5]">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOLD (보관하기) 패널 -->
+            <div class="glass-panel rounded-3xl p-4 flex flex-col items-center">
+                <span class="text-xs font-bold text-[#A0AEC0] uppercase tracking-wider mb-2">HOLD (보관 블록)</span>
+                <div class="w-24 h-24 bg-white/60 rounded-2xl border-2 border-[#E2E8F0] flex items-center justify-center relative">
+                    <canvas id="hold-canvas" width="80" height="80"></canvas>
+                </div>
+            </div>
+
+            <!-- NEXT (다음 블록) 패널 -->
+            <div class="glass-panel rounded-3xl p-4 flex flex-col items-center justify-center">
+                <span class="text-xs font-bold text-[#A0AEC0] uppercase tracking-wider mb-2">NEXT (다음 블록)</span>
+                <div class="w-24 h-24 bg-white/60 rounded-2xl border-2 border-[#E2E8F0] flex items-center justify-center">
+                    <canvas id="next-canvas" width="80" height="80"></canvas>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- 모바일 및 가상 컨트롤러 영역 -->
+    <footer class="w-full max-w-md z-10 my-4">
+        <!-- 모바일 터치 패드 -->
+        <div class="grid grid-cols-5 gap-2 p-2 bg-white/60 backdrop-blur-sm rounded-3xl border-2 border-[#BEE3F8] shadow-sm max-w-sm mx-auto">
+            <!-- 보관 버튼 -->
+            <button id="ctrl-hold" class="aspect-square bg-slate-100 hover:bg-[#E2E8F0] text-[#718096] active:scale-90 transition-transform font-bold rounded-2xl flex flex-col items-center justify-center text-xs shadow-inner focus:outline-none">
+                <span>Hold</span>
+                <span class="text-[10px] text-sky-400 font-extrabold">C</span>
+            </button>
+            <!-- 왼쪽 이동 -->
+            <button id="ctrl-left" class="aspect-square bg-[#90CDF4]/20 hover:bg-[#90CDF4]/40 text-[#3182CE] active:scale-90 transition-transform font-bold rounded-2xl flex items-center justify-center text-xl shadow-inner focus:outline-none">
+                ◀
+            </button>
+            <!-- 회전 (위로) -->
+            <button id="ctrl-up" class="aspect-square bg-[#FFB7B2]/20 hover:bg-[#FFB7B2]/40 text-[#E53E3E] active:scale-90 transition-transform font-bold rounded-2xl flex flex-col items-center justify-center text-xs shadow-inner focus:outline-none">
+                <span class="text-lg">▲</span>
+                <span class="text-[9px] font-extrabold text-red-400">회전</span>
+            </button>
+            <!-- 오른쪽 이동 -->
+            <button id="ctrl-right" class="aspect-square bg-[#90CDF4]/20 hover:bg-[#90CDF4]/40 text-[#3182CE] active:scale-90 transition-transform font-bold rounded-2xl flex items-center justify-center text-xl shadow-inner focus:outline-none">
+                ▶
+            </button>
+            <!-- 하드 드롭 -->
+            <button id="ctrl-space" class="aspect-square bg-[#4FD1C5]/20 hover:bg-[#4FD1C5]/40 text-[#319795] active:scale-90 transition-transform font-bold rounded-2xl flex flex-col items-center justify-center text-[10px] shadow-inner focus:outline-none">
+                <span>Drop</span>
+                <span class="text-[10px] text-teal-500 font-extrabold">▼▼</span>
+            </button>
+        </div>
+        <!-- 소프트 드롭은 아래쪽 버튼이 따로 필요하므로 중앙 하단에 미니 터치패드 레이아웃을 최적화함 -->
+        <div class="flex justify-center mt-2">
+            <button id="ctrl-down" class="w-24 py-2 bg-[#90CDF4]/20 hover:bg-[#90CDF4]/40 text-[#3182CE] active:scale-95 transition-transform font-bold rounded-xl text-xs flex items-center justify-center gap-1 shadow-inner focus:outline-none">
+                ▼ 천천히 내리기 (소프트 드롭)
+            </button>
+        </div>
+    </footer>
+
+    <!-- 게임 시스템 및 로직 자바스크립트 -->
+    <script>
+        // ----------------- Web Audio API 사운드 생성기 -----------------
+        class SoundSynth {
+            constructor() {
+                this.ctx = null;
+                this.isSfxEnabled = true;
+                this.isBgmEnabled = false;
+                this.bgmInterval = null;
+                this.bgmStep = 0;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            playTone(freq, type, duration, volume = 0.1) {
+                if (!this.isSfxEnabled || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gainNode = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    
+                    gainNode.gain.setValueAtTime(volume, this.ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+                    osc.connect(gainNode);
+                    gainNode.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {
+                    console.log("오디오 재생 에러:", e);
+                }
+            }
+
+            playMove() {
+                this.init();
+                // 맑고 귀여운 틱 소리
+                this.playTone(600, 'triangle', 0.08, 0.15);
+            }
+
+            playRotate() {
+                this.init();
+                // 띠링~ 소리
+                this.playTone(880, 'sine', 0.12, 0.2);
+            }
+
+            playDrop() {
+                this.init();
+                // 쿵 소리
+                this.playTone(150, 'triangle', 0.15, 0.3);
+            }
+
+            playClear() {
+                this.init();
+                // 파스텔 톤 가득한 영롱한 피치 상승 효과음
+                const now = this.ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // 도, 미, 솔, 도 (C5, E5, G5, C6)
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        this.playTone(freq, 'sine', 0.25, 0.15);
+                    }, index * 80);
+                });
+            }
+
+            playLevelUp() {
+                this.init();
+                // 축하 팡파레 느낌
+                const notes = [587.33, 698.46, 880.00, 1174.66]; // 레, 파, 라, 레
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        this.playTone(freq, 'triangle', 0.3, 0.2);
+                    }, index * 100);
+                });
+            }
+
+            playGameOver() {
+                this.init();
+                // 터지는 우울한 톤
+                const notes = [392.00, 349.23, 311.13, 261.63]; // 솔, 파, 미b, 도
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        this.playTone(freq, 'sawtooth', 0.4, 0.15);
+                    }, index * 150);
+                });
+            }
+
+            // 아주 귀여운 8비트 파스텔 멜로디 루프 생성
+            startBgm() {
+                this.init();
+                if (this.bgmInterval) clearInterval(this.bgmInterval);
+                if (!this.isBgmEnabled) return;
+
+                // 시나모롤이 구름 위를 뛰노는 듯한 평화로운 펜타토닉 멜로디 (C Major)
+                const melody = [
+                    523.25, 587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33,
+                    659.25, 659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25
+                ];
+
+                this.bgmStep = 0;
+                this.bgmInterval = setInterval(() => {
+                    if (!this.isBgmEnabled) return;
+                    const freq = melody[this.bgmStep % melody.length];
+                    // 부드러운 사인파로 아기자기하게 연주
+                    this.playTone(freq, 'sine', 0.25, 0.04);
+                    this.bgmStep++;
+                }, 300); // 템포 조절
+            }
+
+            stopBgm() {
+                if (this.bgmInterval) {
+                    clearInterval(this.bgmInterval);
+                    this.bgmInterval = null;
+                }
+            }
+        }
+
+        const sound = new SoundSynth();
+
+        // ----------------- 테트리스 주요 상수 및 설정 -----------------
+        const CANVAS_WIDTH = 300;
+        const CANVAS_HEIGHT = 600;
+        const ROWS = 20;
+        const COLS = 10;
+        const BLOCK_SIZE = CANVAS_WIDTH / COLS; // 30px
+
+        // 블록별 색상 매핑 (시나모롤 파스텔 스펙트럼)
+        const COLORS = {
+            1: { bg: '#EBF8FF', border: '#BEE3F8', isCinnamon: true,  name: 'CinnBody' },  // O블록 (시나모롤 화이트)
+            2: { bg: '#E2E8F0', border: '#CBD5E0', isCinnamon: false, name: 'Cloud' },     // I블록 (라이트그레이 구름)
+            3: { bg: '#FFD8D6', border: '#FFB7B2', isCinnamon: false, name: 'CheekPink' }, // T블록 (볼터치 핑크)
+            4: { bg: '#D3F9D8', border: '#A3E635', isCinnamon: false, name: 'MintSky' },   // S블록 (소다 민트)
+            5: { bg: '#EBF4FF', border: '#90CDF4', isCinnamon: false, name: 'CyanSky' },   // Z블록 (맑은 하늘)
+            6: { bg: '#FEFCBF', border: '#F6E05E', isCinnamon: false, name: 'Chiffon' },   // J블록 (쉬폰 엘로우)
+            7: { bg: '#E2D9F3', border: '#D6BCFA', isCinnamon: false, name: 'Mocha' }      // L블록 (모카 퍼플)
+        };
+
+        // 테트로미노 형태 정의
+        const SHAPES = {
+            'O': [[1, 1],
+                  [1, 1]],
+
+            'I': [[0, 2, 0, 0],
+                  [0, 2, 0, 0],
+                  [0, 2, 0, 0],
+                  [0, 2, 0, 0]],
+
+            'T': [[0, 3, 0],
+                  [3, 3, 3],
+                  [0, 0, 0]],
+
+            'S': [[0, 4, 4],
+                  [4, 4, 0],
+                  [0, 0, 0]],
+
+            'Z': [[5, 5, 0],
+                  [0, 5, 5],
+                  [0, 0, 0]],
+
+            'J': [[0, 6, 0],
+                  [0, 6, 0],
+                  [6, 6, 0]],
+
+            'L': [[0, 7, 0],
+                  [0, 7, 0],
+                  [0, 7, 7]]
+        };
+
+        // ----------------- 테트리스 코어 엔진 클래스 -----------------
+        class TetrisGame {
+            constructor() {
+                this.canvas = document.getElementById('tetris-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.nextCanvas = document.getElementById('next-canvas');
+                this.nextCtx = this.nextCanvas.getContext('2d');
+                this.holdCanvas = document.getElementById('hold-canvas');
+                this.holdCtx = this.holdCanvas.getContext('2d');
+
+                this.grid = this.createGrid();
+                this.score = 0;
+                this.level = 1;
+                this.lines = 0;
+                this.isGameOver = false;
+                this.isPaused = true;
+
+                this.currentPiece = null;
+                this.nextPiece = null;
+                this.holdPiece = null;
+                this.hasHeld = false; // 한 턴에 한 번만 hold 가능하도록 제한
+
+                this.dropCounter = 0;
+                this.lastTime = 0;
+
+                // 마스코트 상태 제어용
+                this.mascotState = 'idle'; 
+                this.mascotTimer = null;
+            }
+
+            createGrid() {
+                return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+            }
+
+            // 새로운 블록 생성
+            getRandomPiece() {
+                const pieces = ['O', 'I', 'T', 'S', 'Z', 'J', 'L'];
+                const randType = pieces[Math.floor(Math.random() * pieces.length)];
+                const shape = SHAPES[randType];
+                
+                return {
+                    type: randType,
+                    matrix: JSON.parse(JSON.stringify(shape)),
+                    x: Math.floor((COLS - shape[0].length) / 2),
+                    y: randType === 'I' ? -2 : -1 // I블록은 보드 탑 마진 고려
+                };
+            }
+
+            // 게임 리셋 및 시작
+            start() {
+                this.grid = this.createGrid();
+                this.score = 0;
+                this.level = 1;
+                this.lines = 0;
+                this.isGameOver = false;
+                this.isPaused = false;
+                this.holdPiece = null;
+                this.hasHeld = false;
+
+                this.currentPiece = this.getRandomPiece();
+                this.nextPiece = this.getRandomPiece();
+
+                this.updateScoreUI();
+                this.hideOverlay();
+                this.updateMascot('happy', '우와! 힘내자구!');
+                
+                sound.startBgm();
+
+                this.lastTime = performance.now();
+                requestAnimationFrame((t) => this.update(t));
+            }
+
+            // 업데이트 루프
+            update(time = 0) {
+                if (this.isPaused || this.isGameOver) return;
+
+                const deltaTime = time - this.lastTime;
+                this.lastTime = time;
+                this.dropCounter += deltaTime;
+
+                // 100레벨 시스템에 맞춰 속도를 계산 (레벨당 조금씩 빨라짐)
+                // 1레벨: 800ms ~ 100레벨: 약 60ms (한계 속도 설정)
+                const speed = Math.max(60, 800 - (this.level - 1) * 7.5);
+
+                if (this.dropCounter > speed) {
+                    this.drop();
+                }
+
+                this.draw();
+                requestAnimationFrame((t) => this.update(t));
+            }
+
+            // 아래로 한 칸 하강
+            drop() {
+                this.currentPiece.y++;
+                if (this.collide()) {
+                    this.currentPiece.y--;
+                    this.merge();
+                    this.clearLines();
+                    this.spawnNext();
+                }
+                this.dropCounter = 0;
+            }
+
+            // 하드 드롭 (한번에 바닥으로 내리기)
+            hardDrop() {
+                if (this.isPaused || this.isGameOver) return;
+                let steps = 0;
+                while (!this.collide()) {
+                    this.currentPiece.y++;
+                    steps++;
+                }
+                this.currentPiece.y--;
+                this.merge();
+                this.clearLines();
+                this.spawnNext();
+                sound.playDrop();
+                
+                // 마스코트 응원 효과
+                if (steps > 12) {
+                    this.updateMascot('happy', '완벽한 낙하야! ✨', 1500);
+                }
+            }
+
+            // 좌우 이동
+            move(dir) {
+                this.currentPiece.x += dir;
+                if (this.collide()) {
+                    this.currentPiece.x -= dir;
+                } else {
+                    sound.playMove();
+                }
+            }
+
+            // 회전 (오른쪽 90도 회전)
+            rotate() {
+                const matrix = this.currentPiece.matrix;
+                const n = matrix.length;
+                // 새로운 회전된 임시 매트릭스 생성
+                const temp = Array.from({ length: n }, () => Array(n).fill(0));
+                for (let r = 0; r < n; r++) {
+                    for (let c = 0; c < n; c++) {
+                        temp[c][n - 1 - r] = matrix[r][c];
+                    }
+                }
+
+                const originalX = this.currentPiece.x;
+                const originalMatrix = this.currentPiece.matrix;
+                this.currentPiece.matrix = temp;
+
+                // 회전 시 벽에 튕기는 현상 처리 (벽차기 - Wall Kick 단순화 구현)
+                let offset = 1;
+                while (this.collide()) {
+                    this.currentPiece.x += offset;
+                    offset = -(offset + (offset > 0 ? 1 : -1));
+                    if (Math.abs(offset) > matrix[0].length) {
+                        // 회전 불가능하면 롤백
+                        this.currentPiece.matrix = originalMatrix;
+                        this.currentPiece.x = originalX;
+                        return;
+                    }
+                }
+                sound.playRotate();
+            }
+
+            // 블록 보관 (Hold) 기능
+            hold() {
+                if (this.hasHeld || this.isPaused || this.isGameOver) return;
+
+                sound.playRotate();
+                
+                if (!this.holdPiece) {
+                    // 첫 보관 시
+                    this.holdPiece = {
+                        type: this.currentPiece.type,
+                        matrix: SHAPES[this.currentPiece.type]
+                    };
+                    this.currentPiece = this.nextPiece;
+                    this.nextPiece = this.getRandomPiece();
+                } else {
+                    // 맞교환 시
+                    const temp = {
+                        type: this.holdPiece.type,
+                        matrix: SHAPES[this.holdPiece.type]
+                    };
+                    this.holdPiece = {
+                        type: this.currentPiece.type,
+                        matrix: SHAPES[this.currentPiece.type]
+                    };
+                    this.currentPiece = {
+                        type: temp.type,
+                        matrix: temp.matrix,
+                        x: Math.floor((COLS - temp.matrix[0].length) / 2),
+                        y: temp.type === 'I' ? -2 : -1
+                    };
+                }
+                
+                this.hasHeld = true;
+                this.drawPreviewPanels();
+            }
+
+            // 충돌 감지
+            collide() {
+                const matrix = this.currentPiece.matrix;
+                for (let r = 0; r < matrix.length; r++) {
+                    for (let c = 0; c < matrix[r].length; c++) {
+                        if (matrix[r][c] !== 0) {
+                            const boardX = this.currentPiece.x + c;
+                            const boardY = this.currentPiece.y + r;
+
+                            // 벽 또는 바닥 경계 체크
+                            if (boardX < 0 || boardX >= COLS || boardY >= ROWS) {
+                                return true;
+                            }
+                            // 고정된 블록과의 충돌 검사 (천장 위 음수 y 영역은 예외 허용)
+                            if (boardY >= 0 && this.grid[boardY][boardX] !== 0) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            // 현재 조각을 그리드에 고정하기
+            merge() {
+                const matrix = this.currentPiece.matrix;
+                for (let r = 0; r < matrix.length; r++) {
+                    for (let c = 0; c < matrix[r].length; c++) {
+                        if (matrix[r][c] !== 0) {
+                            const boardY = this.currentPiece.y + r;
+                            const boardX = this.currentPiece.x + c;
+                            
+                            if (boardY < 0) {
+                                // 화면 상단을 넘어서 블록이 고정되면 게임 오버
+                                this.triggerGameOver();
+                                return;
+                            }
+                            this.grid[boardY][boardX] = matrix[r][c];
+                        }
+                    }
+                }
+            }
+
+            // 가득 찬 가로줄 지우기
+            clearLines() {
+                let cleared = 0;
+                
+                outer: for (let r = ROWS - 1; r >= 0; r--) {
+                    for (let c = 0; c < COLS; c++) {
+                        if (this.grid[r][c] === 0) {
+                            continue outer;
+                        }
+                    }
+                    
+                    // 가득 찬 줄을 찾으면 제거하고 상단에 빈 행 추가
+                    const row = this.grid.splice(r, 1)[0];
+                    this.grid.unshift(Array(COLS).fill(0));
+                    cleared++;
+                    r++; // 배열 밀렸으므로 인덱스 보정
+                }
+
+                if (cleared > 0) {
+                    sound.playClear();
+
+                    // 점수 계산 (동시 클리어 시 보너스 증가)
+                    const basePoints = [0, 100, 300, 500, 800];
+                    const gainedPoints = basePoints[cleared] * this.level;
+                    this.score += gainedPoints;
+                    this.lines += cleared;
+
+                    // 레벨업 조건 계산 (최대 100레벨 설계)
+                    // 10줄마다 1레벨 업
+                    const targetLevel = Math.min(100, Math.floor(this.lines / 10) + 1);
+                    if (targetLevel > this.level) {
+                        this.level = targetLevel;
+                        sound.playLevelUp();
+                        this.updateMascot('happy', `레벨 업! 벌써 ${this.level}단계야!`, 2500);
+                    } else {
+                        // 연속 성공 시 귀여운 반응
+                        if (cleared >= 3) {
+                            this.updateMascot('happy', '대단해! 구름처럼 쌓았어!', 2000);
+                        } else {
+                            this.updateMascot('happy', '아싸! 시나몬 기분 최고!', 1000);
+                        }
+                    }
+
+                    this.updateScoreUI();
+                } else {
+                    // 블록이 쌓였는데 보드가 가득 차오를 때 경고 반응
+                    const highestRow = this.getHighestBlockRow();
+                    if (highestRow < 7) {
+                        this.updateMascot('sad', '으앗! 조심해, 무너지겠어!', 1500);
+                    }
+                }
+            }
+
+            // 고정된 블록 중 가장 높은 행 위치 감지 (경고 체크용)
+            getHighestBlockRow() {
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        if (this.grid[r][c] !== 0) return r;
+                    }
+                }
+                return ROWS;
+            }
+
+            // 다음 블록 활성화
+            spawnNext() {
+                this.currentPiece = this.nextPiece;
+                this.nextPiece = this.getRandomPiece();
+                this.hasHeld = false; // 새로운 블록이 내려올 때 hold 잠금 해제
+
+                // 스폰 즉시 충돌이 나면 게임 오버
+                if (this.collide()) {
+                    this.triggerGameOver();
+                }
+
+                this.drawPreviewPanels();
+            }
+
+            // 게임 오버 처리
+            triggerGameOver() {
+                this.isGameOver = true;
+                sound.stopBgm();
+                sound.playGameOver();
+                this.updateMascot('sad', '아쉽다... 다시 해보자! 🥺');
+                
+                document.getElementById('overlay-title').innerText = 'GAME OVER';
+                document.getElementById('overlay-title').style.color = '#FC8181';
+                document.getElementById('overlay-desc').innerHTML = `최종 점수: <b class="text-[#4A90E2] text-lg">${this.score}점</b><br>도달한 레벨: <b class="text-orange-400 text-lg">Level ${this.level}</b>`;
+                document.getElementById('btn-start').innerText = '다시 도전하기 🍭';
+                
+                this.showOverlay();
+            }
+
+            // 점수 및 스탯 UI 갱신
+            updateScoreUI() {
+                document.getElementById('txt-score').innerText = String(this.score).padStart(6, '0');
+                document.getElementById('txt-level').innerText = this.level;
+                document.getElementById('txt-lines').innerText = this.lines;
+            }
+
+            // 마스코트 상태 업데이트 및 말풍선 텍스트 조절
+            updateMascot(state, message, resetDelay = 0) {
+                const earL = document.getElementById('ear-l');
+                const earR = document.getElementById('ear-r');
+                const mouth = document.getElementById('mascot-mouth');
+                const bubble = document.getElementById('mascot-bubble');
+
+                if (this.mascotTimer) clearTimeout(this.mascotTimer);
+
+                // 상태별 SVG 실시간 변형
+                if (state === 'happy') {
+                    // 귀가 위로 살짝 흔들리는 형상
+                    earL.setAttribute('d', 'M32 30 C-10 20, -5 55, 30 42');
+                    earR.setAttribute('d', 'M88 30 C130 20, 125 55, 90 42');
+                    mouth.setAttribute('d', 'M55 48 Q60 55 65 48'); // 활짝 미소
+                } else if (state === 'sad') {
+                    // 축 늘어지는 귀, 걱정하는 입
+                    earL.setAttribute('d', 'M32 40 C-15 45, -5 75, 30 58');
+                    earR.setAttribute('d', 'M88 40 C135 45, 125 75, 90 58');
+                    mouth.setAttribute('d', 'M56 52 Q60 48 64 52'); // 시무룩 입
+                } else {
+                    // 평온한 평소 귀와 입
+                    earL.setAttribute('d', 'M32 35 C-10 30, -5 65, 30 52');
+                    earR.setAttribute('d', 'M88 35 C130 30, 125 65, 90 52');
+                    mouth.setAttribute('d', 'M57 51 Q60 54 63 51');
+                }
+
+                bubble.innerText = message;
+
+                // 일정 시간 후 기본 상태로 자동 롤백
+                if (resetDelay > 0) {
+                    this.mascotTimer = setTimeout(() => {
+                        this.updateMascot('idle', '구름처럼 몽실몽실~☁️');
+                    }, resetDelay);
+                }
+            }
+
+            // 화면 그리기
+            draw() {
+                // 게임판 초기화 (투명하고 부드러운 느낌을 위해 지움)
+                this.ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+                // 연한 모눈 격자 배경 그리기
+                this.ctx.strokeStyle = '#F7FAFC';
+                this.ctx.lineWidth = 1;
+                for (let r = 0; r <= ROWS; r++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, r * BLOCK_SIZE);
+                    this.ctx.lineTo(CANVAS_WIDTH, r * BLOCK_SIZE);
+                    this.ctx.stroke();
+                }
+                for (let c = 0; c <= COLS; c++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(c * BLOCK_SIZE, 0);
+                    this.ctx.lineTo(c * BLOCK_SIZE, CANVAS_HEIGHT);
+                    this.ctx.stroke();
+                }
+
+                // 1. 고정된 그리드 블록 그리기
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        if (this.grid[r][c] !== 0) {
+                            this.drawBlock(this.ctx, c, r, this.grid[r][c]);
+                        }
+                    }
+                }
+
+                // 2. 현재 조작 중인 블록 그리기
+                if (this.currentPiece) {
+                    const matrix = this.currentPiece.matrix;
+                    for (let r = 0; r < matrix.length; r++) {
+                        for (let c = 0; c < matrix[r].length; c++) {
+                            if (matrix[r][c] !== 0) {
+                                this.drawBlock(this.ctx, this.currentPiece.x + c, this.currentPiece.y + r, matrix[r][c]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 시나모롤 스타일 둥글둥글한 블록 그리기 메서드
+            drawBlock(context, x, y, value, isPreview = false) {
+                // 화면 위를 넘어간 스폰 대기 조각은 그리지 않음 (단, 미리보기는 예외)
+                if (y < 0 && !isPreview) return;
+
+                const colorConfig = COLORS[value];
+                if (!colorConfig) return;
+
+                const size = isPreview ? 20 : BLOCK_SIZE;
+                const px = x * size;
+                const py = y * size;
+
+                context.save();
+
+                // 둥글둥글한 테두리를 지닌 블록
+                context.fillStyle = colorConfig.bg;
+                context.strokeStyle = colorConfig.border;
+                context.lineWidth = isPreview ? 2 : 3;
+
+                context.beginPath();
+                // Canvas roundRect 폴리필 역할 대용 디자인
+                const radius = isPreview ? 4 : 8;
+                context.roundRect ? context.roundRect(px + 1.5, py + 1.5, size - 3, size - 3, radius) : context.rect(px, py, size, size);
+                context.fill();
+                context.stroke();
+
+                // 시나모롤 대표 시그니처 얼굴 테마 블록 (일명 '화이트 시나몬 블록')
+                // 모든 블록의 내부에 귀여운 Cinnamoroll 얼굴 디테일을 삽입하여 테마 극대화
+                const faceCenterX = px + size / 2;
+                const faceCenterY = py + size / 2;
+
+                // 눈 그리기 (아기자기한 시나모롤 특유의 파란색 동그라미)
+                context.fillStyle = '#4A90E2';
+                context.beginPath();
+                context.arc(faceCenterX - (size * 0.22), faceCenterY - (size * 0.05), isPreview ? 1.5 : 2.5, 0, Math.PI * 2);
+                context.arc(faceCenterX + (size * 0.22), faceCenterY - (size * 0.05), isPreview ? 1.5 : 2.5, 0, Math.PI * 2);
+                context.fill();
+
+                // 볼터치 그리기 (복숭아빛 분홍 볼)
+                context.fillStyle = '#FFB7B2';
+                context.beginPath();
+                context.arc(faceCenterX - (size * 0.32), faceCenterY + (size * 0.15), isPreview ? 1.8 : 3.2, 0, Math.PI * 2);
+                context.arc(faceCenterX + (size * 0.32), faceCenterY + (size * 0.15), isPreview ? 1.8 : 3.2, 0, Math.PI * 2);
+                context.fill();
+
+                // 입 그리기 (w 모양의 작은 입꼬리 미소)
+                context.strokeStyle = '#4A90E2';
+                context.lineWidth = isPreview ? 1 : 1.5;
+                context.lineCap = 'round';
+                context.beginPath();
+                // 미니 스마일 라인
+                context.arc(faceCenterX, faceCenterY + (size * 0.1), isPreview ? 1.5 : 2.5, 0, Math.PI);
+                context.stroke();
+
+                context.restore();
+            }
+
+            // HOLD & NEXT 전용 패널 그리기
+            drawPreviewPanels() {
+                // 1. NEXT 그리기
+                this.nextCtx.clearRect(0, 0, 80, 80);
+                if (this.nextPiece) {
+                    const matrix = this.nextPiece.matrix;
+                    const blockVal = this.nextPiece.type;
+                    const gridVal = SHAPES[blockVal][0].find(v => v !== 0) || SHAPES[blockVal][1]?.find(v => v !== 0);
+                    
+                    // 정렬 좌표 보정 계산
+                    const offsetX = (80 - matrix[0].length * 20) / 2 / 20;
+                    const offsetY = (80 - matrix.length * 20) / 2 / 20;
+
+                    for (let r = 0; r < matrix.length; r++) {
+                        for (let c = 0; c < matrix[r].length; c++) {
+                            if (matrix[r][c] !== 0) {
+                                this.drawBlock(this.nextCtx, c + offsetX, r + offsetY, matrix[r][c], true);
+                            }
+                        }
+                    }
+                }
+
+                // 2. HOLD 그리기
+                this.holdCtx.clearRect(0, 0, 80, 80);
+                if (this.holdPiece) {
+                    const matrix = this.holdPiece.matrix;
+                    const offsetX = (80 - matrix[0].length * 20) / 2 / 20;
+                    const offsetY = (80 - matrix.length * 20) / 2 / 20;
+
+                    for (let r = 0; r < matrix.length; r++) {
+                        for (let c = 0; c < matrix[r].length; c++) {
+                            if (matrix[r][c] !== 0) {
+                                this.drawBlock(this.holdCtx, c + offsetX, r + offsetY, matrix[r][c], true);
+                            }
+                        }
+                    }
+                }
+            }
+
+            showOverlay() {
+                document.getElementById('game-overlay').style.display = 'flex';
+                this.isPaused = true;
+            }
+
+            hideOverlay() {
+                document.getElementById('game-overlay').style.display = 'none';
+                this.isPaused = false;
+            }
+        }
+
+        // ----------------- 이벤트 리스너 및 부트스트랩 -----------------
+        const game = new TetrisGame();
+
+        // 게임 시작 버튼 바인딩
+        document.getElementById('btn-start').addEventListener('click', () => {
+            game.start();
+        });
+
+        // 윈도우 키보드 입력 핸들링
+        window.addEventListener('keydown', (e) => {
+            if (game.isPaused || game.isGameOver) return;
+
+            switch (e.key) {
+                case 'ArrowLeft':
+                    game.move(-1);
+                    break;
+                case 'ArrowRight':
+                    game.move(1);
+                    break;
+                case 'ArrowDown':
+                    game.drop(); // 소프트 드롭
+                    sound.playMove();
+                    break;
+                case 'ArrowUp':
+                    game.rotate();
+                    break;
+                case ' ': // 스페이스 바
+                    e.preventDefault(); // 화면 스크롤 방지
+                    game.hardDrop();
+                    break;
+                case 'Shift':
+                case 'c':
+                case 'C':
+                    game.hold();
+                    break;
+            }
+            game.draw();
+        });
+
+        // 모바일 가상 패드 바인딩
+        document.getElementById('ctrl-left').addEventListener('click', () => {
+            if (game.isPaused || game.isGameOver) return;
+            game.move(-1);
+            game.draw();
+        });
+
+        document.getElementById('ctrl-right').addEventListener('click', () => {
+            if (game.isPaused || game.isGameOver) return;
+            game.move(1);
+            game.draw();
+        });
+
+        document.getElementById('ctrl-up').addEventListener('click', () => {
+            if (game.isPaused || game.isGameOver) return;
+            game.rotate();
+            game.draw();
+        });
+
+        document.getElementById('ctrl-down').addEventListener('click', () => {
+            if (game.isPaused || game.isGameOver) return;
+            game.drop();
+            sound.playMove();
+            game.draw();
+        });
+
+        document.getElementById('ctrl-space').addEventListener('click', () => {
+            if (game.isPaused || game.isGameOver) return;
+            game.hardDrop();
+            game.draw();
+        });
+
+        document.getElementById('ctrl-hold').addEventListener('click', () => {
+            if (game.isPaused || game.isGameOver) return;
+            game.hold();
+            game.draw();
+        });
+
+        // 오디오 토글 스위치 설정
+        const btnBgm = document.getElementById('btn-bgm');
+        const btnSfx = document.getElementById('btn-sfx');
+
+        btnBgm.addEventListener('click', () => {
+            sound.isBgmEnabled = !sound.isBgmEnabled;
+            if (sound.isBgmEnabled) {
+                btnBgm.innerText = '켜짐 🔊';
+                btnBgm.classList.remove('bg-slate-100', 'text-slate-500');
+                btnBgm.classList.add('bg-pink-300', 'text-white');
+                sound.startBgm();
+            } else {
+                btnBgm.innerText = '끄기 🔇';
+                btnBgm.classList.add('bg-slate-100', 'text-slate-500');
+                btnBgm.classList.remove('bg-pink-300', 'text-white');
+                sound.stopBgm();
+            }
+        });
+
+        btnSfx.addEventListener('click', () => {
+            sound.isSfxEnabled = !sound.isSfxEnabled;
+            if (sound.isSfxEnabled) {
+                btnSfx.innerText = '켜짐 🔊';
+                btnSfx.classList.remove('bg-slate-100', 'text-slate-500');
+                btnSfx.classList.add('bg-[#90CDF4]', 'text-white');
+            } else {
+                btnSfx.innerText = '끄기 🔇';
+                btnSfx.classList.add('bg-slate-100', 'text-slate-500');
+                btnSfx.classList.remove('bg-[#90CDF4]', 'text-white');
+            }
+        });
+
+        // 최초 1회 빈 렌더링을 통한 초기 보드 세팅
+        game.draw();
+        game.drawPreviewPanels();
+
+    </script>
+</body>
+</html>

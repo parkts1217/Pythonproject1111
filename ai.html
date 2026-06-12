@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Software Engineer Portfolio</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom animation utilities for interactive feelings */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .neon-glow {
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300 font-sans antialiased">
+
+  <!-- Navigation Bar -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="text-xl font-bold tracking-wider text-brand-600 dark:text-brand-500 flex items-center gap-2">
+        <i data-lucide="cpu" class="w-6 h-6"></i>
+        <span>DEV.박태수</span>
+      </a>
+      
+      <!-- Desktop Menu -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#about" class="text-sm font-medium hover:text-brand-500 transition-colors">소개</a>
+        <a href="#bridge" class="text-sm font-medium hover:text-brand-500 transition-colors">설비 & AI 연결고리</a>
+        <a href="#projects" class="text-sm font-medium hover:text-brand-500 transition-colors">프로젝트</a>
+        <a href="#skills" class="text-sm font-medium hover:text-brand-500 transition-colors">기술 스택</a>
+        <a href="#interactive" class="text-sm font-medium hover:text-brand-500 transition-colors">AI 매칭 게임</a>
+        <a href="#contact" class="text-sm font-medium hover:text-brand-500 transition-colors">연락처</a>
+      </nav>
+
+      <!-- Utility Buttons (Theme toggle & Mobile menu) -->
+      <div class="flex items-center gap-4">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" aria-label="다크모드 전환">
+          <i id="theme-icon-sun" data-lucide="sun" class="w-5 h-5 hidden"></i>
+          <i id="theme-icon-moon" data-lucide="moon" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Mobile Menu Trigger -->
+        <button id="mobile-menu-toggle" class="p-2 md:hidden rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" aria-label="메뉴 열기">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 pt-2 pb-4 space-y-2">
+      <a href="#about" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-sm font-medium">소개</a>
+      <a href="#bridge" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-sm font-medium">설비 & AI 연결고리</a>
+      <a href="#projects" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-sm font-medium">프로젝트</a>
+      <a href="#skills" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-sm font-medium">기술 스택</a>
+      <a href="#interactive" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-sm font-medium">AI 매칭 게임</a>
+      <a href="#contact" class="block py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-sm font-medium">연락처</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative min-h-screen pt-24 pb-16 flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-50/50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-950 dark:to-brand-900/10">
+    <!-- Glowing background elements -->
+    <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-brand-500/10 dark:bg-brand-500/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-3xl"></div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300 mb-6">
+        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+        비전공 설비 관리 엔지니어의 도전
+      </span>
+      
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6">
+        현장의 실제 데이터를 다루던 눈으로,<br class="hidden sm:inline">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-purple-600 dark:from-brand-400 dark:to-purple-400">실용적인 AI 소프트웨어</span>를 만듭니다.
+      </h1>
+
+      <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        제조 현장의 다양한 설비 데이터와 이상 신호를 수동으로 분석하던 한계에서 벗어나,
+        기계 학습 모델과 알고리즘을 이용한 자동화된 지능형 솔루션을 꿈꾸고 있습니다.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#projects" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium shadow-lg hover:shadow-brand-500/20 transition-all gap-2 group">
+          <span>프로젝트 구경하기</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        <a href="#contact" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 font-medium transition-all gap-2">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span>커피챗 제안하기</span>
+        </a>
+      </div>
+
+      <!-- Live metrics demo -->
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto bg-white/50 dark:bg-slate-900/50 backdrop-blur p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div class="p-4 text-center">
+          <div class="text-3xl font-bold text-brand-600 dark:text-brand-400">100+</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">분석해본 설비 종류</div>
+        </div>
+        <div class="p-4 text-center">
+          <div class="text-3xl font-bold text-brand-600 dark:text-brand-400">10,000+</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">현장 로그 데이터 가공</div>
+        </div>
+        <div class="p-4 text-center">
+          <div class="text-3xl font-bold text-brand-600 dark:text-brand-400">80%</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">예측 모델 최고 정확도</div>
+        </div>
+        <div class="p-4 text-center">
+          <div class="text-3xl font-bold text-brand-600 dark:text-brand-400">200%</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">학습 열정과 성장세</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 animate-bounce text-slate-400 dark:text-slate-600">
+      <span class="text-xs tracking-widest font-mono">SCROLL</span>
+      <i data-lucide="chevrons-down" class="w-4 h-4"></i>
+    </div>
+  </section>
+
+  <!-- About Me (Introduce) -->
+  <section id="about" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-section">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-3xl font-bold tracking-tight mb-4">비전공자라는 점은, 저의 강점입니다.</h2>
+      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+        이론 중심의 접근보다, 산업 현장에서 마주치는 현실 세계의 진짜 데이터가 가진 가치와 불규칙성을 누구보다 잘 이해하고 있습니다.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-12 gap-8 items-center">
+      <!-- Profile Card -->
+      <div class="md:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm relative overflow-hidden group">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-brand-500/10 rounded-bl-full group-hover:scale-110 transition-transform"></div>
+        <div class="flex flex-col items-center text-center">
+          <!-- Profile Emoji / Mock photo -->
+          <div class="w-28 h-28 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-5xl mb-6 shadow-inner border-2 border-brand-500/20">
+            👨‍💻
+          </div>
+          <h3 class="text-2xl font-bold mb-1">박태수 (TeaSoo Park)</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">설비 관리 엔지니어 ➔ AI 소프트웨어 지망생</p>
+          
+          <div class="w-full space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800 text-left text-sm">
+            <div class="flex items-center gap-3">
+              <i data-lucide="map-pin" class="w-4 h-4 text-brand-500"></i>
+              <span>대한민국 충청남도 아산시</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="mail" class="w-4 h-4 text-brand-500"></i>
+              <span>developer.vision@example.com</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="graduation-cap" class="w-4 h-4 text-brand-500"></i>
+              <span>기계공학과 전공 (비전공 개발자)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Professional Vision -->
+      <div class="md:col-span-7 space-y-6">
+        <h4 class="text-xl font-bold flex items-center gap-2">
+          <i data-lucide="sparkles" class="text-brand-500 w-5 h-5"></i>
+          비하인드 스토리 & 성장 마인드셋
+        </h4>
+        
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+          공장에 멈추지 않는 모터, 매시간 누적되는 온도 데이터를 매뉴얼에 의존해 일일이 필터링하며 생각했습니다. <br>
+          <strong>"이 비정형 데이터를 실시간 이상 진단 기계 학습 모델로 고도화할 순 없을까?"</strong><br>
+          이 질문이 저를 코딩의 세계로 이끌었습니다. 퇴근 후와 주말을 이용해 독학과 온라인 강의로 Python 기초를 닦고, 데이터 가공 기법과 딥러닝 개념을 빠르게 체득했습니다.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <h5 class="font-bold mb-2 flex items-center gap-2 text-brand-500">
+              <i data-lucide="target" class="w-4 h-4"></i>
+              도메인 융합력
+            </h5>
+            <p class="text-xs text-slate-500 dark:text-slate-400">설비 수명 주기, 이상 진동 신호의 물리적 성질 등 도메인 지식에 기반한 피처 엔지니어링 수행 가능</p>
+          </div>
+          
+          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <h5 class="font-bold mb-2 flex items-center gap-2 text-brand-500">
+              <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+              실용적 AI 지향
+            </h5>
+            <p class="text-xs text-slate-500 dark:text-slate-400">모델의 수치적 정확도를 넘어 현업이 실제로 활용하고 직관적으로 파악할 수 있는 서비스 형태를 고민</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connection Bridge Section -->
+  <section id="bridge" class="py-20 bg-slate-100 dark:bg-slate-900/50 fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold mb-4">설비 관리 경험은 AI 개발에 큰 무기가 됩니다</h2>
+        <p class="text-slate-600 dark:text-slate-400">현장 데이터의 탄생 과정을 알기에, 더 견고하고 실무적인 AI 알고리즘을 설계할 수 있습니다.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Step 1 -->
+        <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:translate-y-[-4px] transition-transform">
+          <div class="w-12 h-12 bg-indigo-50 dark:bg-brand-950 rounded-xl flex items-center justify-center text-brand-500 mb-6">
+            <i data-lucide="activity" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold mb-3">01. 아날로그 데이터의 이해</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            공장의 진동, 온도, 가동 전류 등 노이즈가 극심한 생(Raw) 데이터를 직접 겪으며 노이즈 필터링과 유효 신호 추출의 중요성을 깨우쳤습니다.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:translate-y-[-4px] transition-transform">
+          <div class="w-12 h-12 bg-indigo-50 dark:bg-brand-950 rounded-xl flex items-center justify-center text-brand-500 mb-6">
+            <i data-lucide="database" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold mb-3">02. 도메인 기반 AI 피처 생성</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            단순 수치 분석이 아닌, 회전체 결함 주파수(Fault Frequency) 등 설비 이론과 접목한 특성치 정의를 내릴 수 있는 능력을 갖추었습니다.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:translate-y-[-4px] transition-transform">
+          <div class="w-12 h-12 bg-indigo-50 dark:bg-brand-950 rounded-xl flex items-center justify-center text-brand-500 mb-6">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold mb-3">03. 안정성 중심 배포 설계</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            단 1초의 고장도 치명적인 제조 프로세스를 담당했기에, 모델의 속도, 에러 시 대응 시나리오, 실시간성 요구 사항을 민감하게 고민합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-section">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+      <div>
+        <h2 class="text-3xl font-bold tracking-tight mb-2">도전을 증명하는 프로젝트</h2>
+        <p class="text-slate-600 dark:text-slate-400">현업 경험을 바탕으로, AI 모델 구현과 웹 서비스를 결합했습니다.</p>
+      </div>
+      <!-- Tab filters -->
+      <div class="flex gap-2 mt-4 md:mt-0 overflow-x-auto pb-2">
+        <button onclick="filterProjects('all')" class="project-tab-btn py-1.5 px-4 rounded-full text-xs font-semibold bg-brand-600 text-white transition-colors">전체</button>
+        <button onclick="filterProjects('ai')" class="project-tab-btn py-1.5 px-4 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">AI/머신러닝</button>
+        <button onclick="filterProjects('web')" class="project-tab-btn py-1.5 px-4 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">풀스택/웹앱</button>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div id="project-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+      <!-- Project 1 (AI category) -->
+      <div class="project-card bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col hover:shadow-xl transition-shadow" data-category="ai">
+        <!-- SVG Drawing of Predicitive Maintenance Dashboard -->
+        <div class="h-48 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center p-6 text-white relative">
+          <i data-lucide="bar-chart-3" class="w-16 h-16 opacity-30 absolute top-4 right-4"></i>
+          <div class="text-center">
+            <div class="text-xs font-mono uppercase tracking-wider mb-1 opacity-75">Time Series Anomaly</div>
+            <div class="text-lg font-bold">진동 데이터 분석을 통한 기어박스 수명 예측기</div>
+          </div>
+        </div>
+        <div class="p-6 flex-1 flex flex-col justify-between">
+          <div>
+            <span class="inline-block py-1 px-2.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 text-xs font-semibold mb-3">AI / 머신러닝</span>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">
+              LSTM 오토인코더 모델을 구축하여, 사내 가상 회전설비의 불규칙 진동 로그에서 이상 징후를 감지하고 잔여 유효 수명(RUL)을 시뮬레이션하는 기법입니다.
+            </p>
+          </div>
+          <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">Python</span>
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">PyTorch</span>
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">Pandas</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-semibold">
+              <button onclick="openModal('project-1')" class="text-brand-600 dark:text-brand-400 hover:underline">프로젝트 상세</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 2 (Web/App category) -->
+      <div class="project-card bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col hover:shadow-xl transition-shadow" data-category="web">
+        <!-- SVG Mockup design representing visual inspection -->
+        <div class="h-48 bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center p-6 text-white relative">
+          <i data-lucide="scan-eye" class="w-16 h-16 opacity-30 absolute top-4 right-4"></i>
+          <div class="text-center">
+            <div class="text-xs font-mono uppercase tracking-wider mb-1 opacity-75">Vision & Web App</div>
+            <div class="text-lg font-bold">실시간 제조 라인 불량 부품 식별 대시보드</div>
+          </div>
+        </div>
+        <div class="p-6 flex-1 flex flex-col justify-between">
+          <div>
+            <span class="inline-block py-1 px-2.5 rounded bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 text-xs font-semibold mb-3">풀스택 / 웹앱</span>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">
+              스마트폰 카메라 또는 가동된 비디오 스트림을 통해 미세 크랙 불량을 컴퓨터 비전(YOLOv8) 모델로 검출하고, 실시간 통계를 브라우저 대시보드에 뿌려주는 솔루션입니다.
+            </p>
+          </div>
+          <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">Python FastAPI</span>
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">OpenCV</span>
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">React</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-semibold">
+              <button onclick="openModal('project-2')" class="text-brand-600 dark:text-brand-400 hover:underline">프로젝트 상세</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 3 (AI Category - Conversational LLM) -->
+      <div class="project-card bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col hover:shadow-xl transition-shadow" data-category="ai">
+        <!-- SVG illustration representing AI Chat -->
+        <div class="h-48 bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center p-6 text-white relative">
+          <i data-lucide="message-square-code" class="w-16 h-16 opacity-30 absolute top-4 right-4"></i>
+          <div class="text-center">
+            <div class="text-xs font-mono uppercase tracking-wider mb-1 opacity-75">RAG LLM Solution</div>
+            <div class="text-lg font-bold">사내 설비 고장 대응 매뉴얼 RAG 기반 AI 비서</div>
+          </div>
+        </div>
+        <div class="p-6 flex-1 flex flex-col justify-between">
+          <div>
+            <span class="inline-block py-1 px-2.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 text-xs font-semibold mb-3">AI / 머신러닝</span>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">
+              현업 복잡한 설비 매뉴얼(PDF)을 수백 개 업로드하면 벡터 DB(ChromaDB)에 적재 후, 작업자의 자연어 질문에 상황별 수리 대처법을 정확히 안내하는 AI 에이전트입니다.
+            </p>
+          </div>
+          <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">LangChain</span>
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">Gemini API</span>
+              <span class="text-2xs font-mono bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded text-slate-600 dark:text-slate-400">ChromaDB</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-semibold">
+              <button onclick="openModal('project-3')" class="text-brand-600 dark:text-brand-400 hover:underline">프로젝트 상세</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Technical Skills Section -->
+  <section id="skills" class="py-20 bg-slate-100 dark:bg-slate-900/50 fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold mb-4">현재 다룰 수 있는 기술 무기입니다</h2>
+        <p class="text-slate-600 dark:text-slate-400">꾸준한 배움과 적극적인 실습으로 기초부터 응용까지 다져왔습니다.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Language / Core -->
+        <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-brand-500">
+            <i data-lucide="code-2" class="w-5 h-5"></i>
+            Languages
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-center justify-between">
+              <span class="text-sm">Python (메인)</span>
+              <span class="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 py-0.5 px-2 rounded-full font-semibold">상</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">JavaScript/ES6</span>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded-full text-slate-600 dark:text-slate-400">중</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">SQL (PostgreSQL)</span>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded-full text-slate-600 dark:text-slate-400">중</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- AI & ML -->
+        <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-brand-500">
+            <i data-lucide="brain" class="w-5 h-5"></i>
+            AI & Machine Learning
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-center justify-between">
+              <span class="text-sm">Scikit-learn</span>
+              <span class="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 py-0.5 px-2 rounded-full font-semibold">상</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">PyTorch (Deep Learning)</span>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded-full text-slate-600 dark:text-slate-400">중</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">LangChain (LLM/RAG)</span>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded-full text-slate-600 dark:text-slate-400">중</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Web & Frameworks -->
+        <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-brand-500">
+            <i data-lucide="layout" class="w-5 h-5"></i>
+            Web Development
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-center justify-between">
+              <span class="text-sm">FastAPI / Flask</span>
+              <span class="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 py-0.5 px-2 rounded-full font-semibold">중상</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">HTML5 / TailwindCSS</span>
+              <span class="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 py-0.5 px-2 rounded-full font-semibold">중상</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">React (기본)</span>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded-full text-slate-600 dark:text-slate-400">중하</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tools & DevOps -->
+        <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-brand-500">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+            Tools & Infrastructure
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-center justify-between">
+              <span class="text-sm">Git & GitHub</span>
+              <span class="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 py-0.5 px-2 rounded-full font-semibold">중상</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">Docker</span>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded-full text-slate-600 dark:text-slate-400">중하</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-sm">WandB (실험 로깅)</span>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 py-0.5 px-2 rounded-full text-slate-600 dark:text-slate-400">중</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive AI Diagnosis Mini-Game Section -->
+  <section id="interactive" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-section">
+    <div class="bg-gradient-to-r from-brand-600 to-indigo-700 dark:from-slate-900 dark:to-brand-950 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
+      <!-- Decorator mesh -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-events-none"></div>
+
+      <div class="max-w-3xl mx-auto text-center relative z-10">
+        <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-white text-xs font-semibold mb-4">재미로 보는 인터랙티브</span>
+        <h2 class="text-3xl font-extrabold mb-4">설비 데이터 진단 시뮬레이터</h2>
+        <p class="text-sm sm:text-base text-indigo-100 mb-10 max-w-xl mx-auto">
+          작동 상태 데이터(진동수와 온도)를 마우스로 조작해 정상/이상 상태를 분류하는 인공지능 엔지니어의 핵심 과정을 가상으로 실행해 보세요!
+        </p>
+
+        <!-- Dynamic Visual Simulator -->
+        <div class="bg-white/10 dark:bg-slate-950/40 backdrop-blur rounded-2xl p-6 border border-white/20 text-left">
+          <div class="grid md:grid-cols-2 gap-6 items-center">
+            
+            <!-- Controls slider -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold tracking-wider uppercase text-indigo-200 mb-1">설비 온도 (°C)</label>
+                <div class="flex items-center gap-3">
+                  <input id="sim-temp" type="range" min="30" max="150" value="65" class="w-full accent-white" oninput="runSimulation()">
+                  <span id="sim-temp-val" class="font-mono text-sm w-12 text-right">65°C</span>
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-xs font-semibold tracking-wider uppercase text-indigo-200 mb-1">모터 회전 진동 (Hz)</label>
+                <div class="flex items-center gap-3">
+                  <input id="sim-vib" type="range" min="10" max="120" value="45" class="w-full accent-white" oninput="runSimulation()">
+                  <span id="sim-vib-val" class="font-mono text-sm w-12 text-right">45Hz</span>
+                </div>
+              </div>
+
+              <!-- Output Box -->
+              <div class="p-4 rounded-xl bg-black/30 border border-white/10 mt-4">
+                <div class="text-xs text-indigo-200 uppercase tracking-widest font-mono">가상 인공지능 추론 결과</div>
+                <div class="flex items-center gap-3 mt-2">
+                  <!-- Dynamic Status Light -->
+                  <span id="sim-status-light" class="w-3.5 h-3.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span id="sim-status-text" class="text-lg font-bold">정상 가동 (Normal)</span>
+                </div>
+                <p id="sim-desc" class="text-xs text-slate-300 mt-1.5">온도와 진동수가 안전 범주에 있습니다. 설비 예방 보전이 안전하게 이루어지고 있습니다.</p>
+              </div>
+            </div>
+
+            <!-- Visual Graph representation -->
+            <div class="h-48 rounded-xl bg-slate-950 border border-white/10 flex flex-col justify-between p-4 relative overflow-hidden">
+              <div class="text-[10px] font-mono text-slate-400 absolute top-2 left-2">Y-Axis: 이상 지수 (Anomaly Score)</div>
+              
+              <!-- Simulated graph curve -->
+              <div class="w-full h-24 flex items-end gap-1 px-2 mt-4">
+                <div class="bg-indigo-400/40 w-full rounded-t" style="height: 10%"></div>
+                <div class="bg-indigo-400/40 w-full rounded-t" style="height: 15%"></div>
+                <div class="bg-indigo-400/40 w-full rounded-t" style="height: 12%"></div>
+                <div class="bg-indigo-400/40 w-full rounded-t" style="height: 25%"></div>
+                <div id="sim-graph-bar" class="bg-emerald-400 w-full rounded-t transition-all duration-300" style="height: 15%"></div>
+              </div>
+
+              <div class="border-t border-white/10 pt-2 flex justify-between text-[10px] font-mono text-slate-400">
+                <span>01초 전</span>
+                <span>02초 전</span>
+                <span>03초 전</span>
+                <span>04초 전</span>
+                <span class="text-brand-300">현재 예측</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-slate-50 dark:bg-slate-950 fade-in-section">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold mb-4">함께 성장을 도모할 팀을 찾습니다</h2>
+        <p class="text-slate-600 dark:text-slate-400">
+          신입 개발자 채용 기회, 교육 멘토링, 사이드 프로젝트 파트너십 혹은 사소한 커피챗까지 모두 열려 있습니다!
+        </p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
+        <form id="contact-form" onsubmit="handleContactSubmit(event)" class="space-y-6">
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">이름 / 기업명</label>
+              <input type="text" id="contact-name" required class="w-full py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">이메일 주소</label>
+              <input type="email" id="contact-email" required class="w-full py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">제안 메세지</label>
+            <textarea id="contact-message" rows="4" required class="w-full py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" placeholder="협업 아이디어 및 이야기를 적어주세요."></textarea>
+          </div>
+          
+          <button type="submit" class="w-full py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium shadow-md hover:shadow-brand-500/10 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>제안 보내기</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-950 py-12 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="text-sm text-slate-500 dark:text-slate-400">
+        © 2026 TeaSoo Park. All rights reserved.
+      </div>
+      <div class="flex gap-6">
+        <a href="https://github.com animate-pulse" target="_blank" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200" aria-label="GitHub">
+          <i data-lucide="github" class="w-5 h-5"></i>
+        </a>
+        <a href="https://linkedin.com" target="_blank" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200" aria-label="LinkedIn">
+          <i data-lucide="linkedin" class="w-5 h-5"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Project Details Modals -->
+  <div id="project-modal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl">
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+        <h3 id="modal-title" class="text-xl font-bold">프로젝트 상세</h3>
+        <button onclick="closeModal()" class="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <!-- Modal Content -->
+      <div id="modal-content" class="p-6 max-h-[70vh] overflow-y-auto space-y-4">
+        <!-- Content will be injected dynamically by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulated Message Notification Toast -->
+  <div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 dark:bg-white text-white dark:text-slate-950 py-3.5 px-5 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0">
+    <i data-lucide="check-circle" class="text-emerald-500 w-5 h-5"></i>
+    <span class="text-sm font-semibold" id="toast-text">메세지가 무사히 발송되었습니다.</span>
+  </div>
+
+  <!-- Script logics -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Dark Mode Toggle Logic
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const sunIcon = document.getElementById('theme-icon-sun');
+    const moonIcon = document.getElementById('theme-icon-moon');
+
+    themeToggleBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      if (isDark) {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
+    });
+
+    // Mobile Menu Toggle Logic
+    const mobileMenuToggleBtn = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuToggleBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Scroll Animations
+    const faders = document.querySelectorAll('.fade-in-section');
+    const appearOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
+    };
+
+    const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        appearOnScroll.unobserve(entry.target);
+      });
+    }, appearOptions);
+
+    faders.forEach(fader => {
+      appearOnScroll.observe(fader);
+    });
+
+    // Project Category Filtering
+    function filterProjects(category) {
+      const cards = document.querySelectorAll('.project-card');
+      const tabs = document.querySelectorAll('.project-tab-btn');
+
+      // Update button visual
+      tabs.forEach(tab => {
+        if (tab.innerText.toLowerCase().includes(category === 'all' ? '전체' : (category === 'ai' ? 'ai' : '웹'))) {
+          tab.className = "project-tab-btn py-1.5 px-4 rounded-full text-xs font-semibold bg-brand-600 text-white transition-colors";
+        } else {
+          tab.className = "project-tab-btn py-1.5 px-4 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors";
+        }
+      });
+
+      // Filter cards
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Interactive Diagnosis Game Logics
+    function runSimulation() {
+      const temp = parseInt(document.getElementById('sim-temp').value);
+      const vib = parseInt(document.getElementById('sim-vib').value);
+
+      document.getElementById('sim-temp-val').innerText = `${temp}°C`;
+      document.getElementById('sim-vib-val').innerText = `${vib}Hz`;
+
+      const light = document.getElementById('sim-status-light');
+      const text = document.getElementById('sim-status-text');
+      const desc = document.getElementById('sim-desc');
+      const graphBar = document.getElementById('sim-graph-bar');
+
+      // Anomaly detection rules
+      // Ideal Safe: temp < 85 && vib < 75
+      // Warning: (temp >= 85 && temp < 115) || (vib >= 75 && vib < 100)
+      // Danger / Critical: temp >= 115 || vib >= 100
+      let score = 0;
+      if (temp >= 85) score += (temp - 85) * 1.2;
+      if (vib >= 75) score += (vib - 75) * 1.5;
+
+      const visualPercent = Math.min(Math.max(score, 10), 100);
+      graphBar.style.height = `${visualPercent}%`;
+
+      if (score === 0) {
+        light.className = "w-3.5 h-3.5 rounded-full bg-emerald-400 animate-pulse";
+        graphBar.className = "bg-emerald-400 w-full rounded-t transition-all duration-300";
+        text.innerText = "정상 가동 (Normal)";
+        desc.innerText = "온도와 진동수가 안전 범주에 있습니다. 설비 예방 보전이 성공적으로 이루어지고 있습니다.";
+      } else if (score > 0 && score < 40) {
+        light.className = "w-3.5 h-3.5 rounded-full bg-amber-400 animate-pulse";
+        graphBar.className = "bg-amber-400 w-full rounded-t transition-all duration-300";
+        text.innerText = "주의 요망 (Warning)";
+        desc.innerText = "기온 및 진동 마찰력이 증가하고 있습니다. 설비 윤활유 보충 및 간접 모니터링 강화를 요구합니다.";
+      } else {
+        light.className = "w-3.5 h-3.5 rounded-full bg-rose-500 animate-pulse";
+        graphBar.className = "bg-rose-500 w-full rounded-t transition-all duration-300";
+        text.innerText = "이상 발생 (Anomaly Detected)";
+        desc.innerText = "설비의 물리적 과부하 징후입니다! AI 진단이 고장 예측 확률 92%를 도출하였습니다. 교체 검토 요망.";
+      }
+    }
+
+    // Run simulator on load once
+    window.onload = function() {
+      runSimulation();
+    }
+
+    // Modal Controls for details
+    const projectDetails = {
+      'project-1': {
+        title: "진동 데이터 분석을 통한 기어박스 수명 예측기",
+        content: `
+          <div class="space-y-4">
+            <p class="text-sm text-slate-600 dark:text-slate-400">설비가 마모될수록 미세 진동 특성에 구조적 주파수 변형이 발생합니다. 본 프로젝트는 이 이상 징후를 조기에 예측합니다.</p>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">핵심 구현 사항</h4>
+            <ul class="list-disc pl-5 text-sm space-y-1 text-slate-600 dark:text-slate-400">
+              <li>사내 가상 공정 회전체 센서 진동 가속도 로그 전처리</li>
+              <li>FT(Fourier Transform)를 활용해 진동의 원시 시계열을 주파수 도메인 특징 벡터로 변환</li>
+              <li>LSTM Autoencoder 기반 비지도 학습 이상 검출 시스템 설계 (정확도 89% 달성)</li>
+            </ul>
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+              <span class="text-xs font-semibold text-brand-600 dark:text-brand-400">비전공자의 시선</span>
+              <p class="text-xs text-slate-500 mt-1">설비 고장이 실제로 어떻게 다단계로 번지는지를 기계 부품 관점에서 잘 알았기에, 단순히 수학적인 차원 축소가 아니라 결함 부위별 의미 있는 주파수 대역을 짚어내서 예측 효율을 2배 높였습니다.</p>
+            </div>
+          </div>
+        `
+      },
+      'project-2': {
+        title: "실시간 제조 라인 불량 부품 식별 대시보드",
+        content: `
+          <div class="space-y-4">
+            <p class="text-sm text-slate-600 dark:text-slate-400">작업자가 하루 수천 개 부품을 육안으로 검수하면서 생기는 피로와 불량 유출을 막는 비전 AI 대시보드 웹앱입니다.</p>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">핵심 구현 사항</h4>
+            <ul class="list-disc pl-5 text-sm space-y-1 text-slate-600 dark:text-slate-400">
+              <li>Roboflow를 활용한 부품 크랙/스크래치 데이터 레이블링</li>
+              <li>YOLOv8 모델 학습 및 FastAPI 서버에 래핑하여 초당 30프레임 추론 처리</li>
+              <li>Tailwind CSS로 모바일 친화적이고 직관적인 경고 알림 UI 설계</li>
+            </ul>
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+              <span class="text-xs font-semibold text-brand-600 dark:text-brand-400">비전공자의 시선</span>
+              <p class="text-xs text-slate-500 mt-1">대시보드 경고가 너무 요란하면 현업의 피로감이 더 커집니다. 최적의 알림 주기와 시각화를 현업 기준에 맞추어 레이아웃을 다듬어 적용성 있는 서비스를 설계했습니다.</p>
+            </div>
+          </div>
+        `
+      },
+      'project-3': {
+        title: "사내 설비 고장 대응 매뉴얼 RAG 기반 AI 비서",
+        content: `
+          <div class="space-y-4">
+            <p class="text-sm text-slate-600 dark:text-slate-400">수백 페이지짜리 백과사전식 설비 점검 가이드북에서 필요한 조치 사항을 단 5초 안에 채팅으로 찾아주는 RAG 챗봇 시스템입니다.</p>
+            <h4 class="font-bold text-slate-900 dark:text-slate-100">핵심 구현 사항</h4>
+            <ul class="list-disc pl-5 text-sm space-y-1 text-slate-600 dark:text-slate-400">
+              <li>PDF 파싱 및 내용 조각 분할(Chunking) 최적화</li>
+              <li>ChromaDB를 이용한 설비 지식 벡터 DB 빌드 및 하이브리드 검색 구현</li>
+              <li>LangChain 활용으로 대화 메모리(Conversational Memory) 추가</li>
+            </ul>
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+              <span class="text-xs font-semibold text-brand-600 dark:text-brand-400">비전공자의 시선</span>
+              <p class="text-xs text-slate-500 mt-1">설비 고장 시엔 다급하므로 '현장에서 가장 자주 부르는 설비의 구어체 별명'도 함께 임베딩 사전에 정제하여 담음으로써 비서의 유효 응답률을 극대화했습니다.</p>
+            </div>
+          </div>
+        `
+      }
+    };
+
+    function openModal(id) {
+      const data = projectDetails[id];
+      if (!data) return;
+
+      document.getElementById('modal-title').innerText = data.title;
+      document.getElementById('modal-content').innerHTML = data.content;
+
+      const modal = document.getElementById('project-modal');
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('project-modal');
+      modal.classList.add('hidden');
+    }
+
+    // Handle Contact Form Submission (Mock UI Toast)
+    function handleContactSubmit(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email').value;
+      const message = document.getElementById('contact-message').value;
+
+      // Reset Form fields
+      document.getElementById('contact-form').reset();
+
+      // Show toast
+      showToast(`${name} 님의 제안이 개발자에게 전송되었습니다!`);
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+
+      toastText.innerText = text;
+      toast.classList.remove('hidden');
+      
+      // Animate entry
+      setTimeout(() => {
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+      }, 50);
+
+      // Hide toast
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 300);
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
